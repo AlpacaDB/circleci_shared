@@ -4,8 +4,7 @@
 # Needs to be called with the component name
 
 repo=$1
-mv * ~/$repo/dockerfiles/
-cd ~/$repo/dockerfiles/
+mv circleci_shared/* .
 
 # Move src code to current dir
 mv ../src/ .
