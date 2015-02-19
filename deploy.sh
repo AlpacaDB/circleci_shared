@@ -11,6 +11,7 @@ repo=$1
 service=$(echo $repo|tr '_' '-')
 
 # Works with the certificate & docker login
+docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS $EXTERNAL_REGISTRY_ENDPOINT
 docker push $EXTERNAL_REGISTRY_ENDPOINT/$repo:$CIRCLE_SHA1
 
 internal_registry=$(./kubectl get --no-headers services registry-service| awk '{print $4}')
