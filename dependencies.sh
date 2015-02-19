@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Template to install dependencies
-# Needs to be parsed, and REPOSITORY renamed with the component name
-# We're assuming to be in ~/<repo-name>/dockerfiles/
+# Needs to be called with the component name
 
-repo=REPOSITORY
+repo=$1
+mv * ~/$repo/dockerfiles/
+cd ~/$repo/dockerfiles/
 
 # Move src code to current dir
 mv ../src/ .
