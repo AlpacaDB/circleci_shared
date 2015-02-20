@@ -18,12 +18,17 @@ internal_registry=$(./kubectl get --no-headers services registry-service| awk '{
 controller=~/$repo/cfg/$repo-controller.yml
 sed -i "s/REGISTRY/$internal_registry/g" $controller
 sed -i "s/VERSION/$CIRCLE_SHA1/g" $controller
+service=~/$repo/cfg/$repo-service.yml
 
 old_controller_name=$(./kubectl get --no-headers -l "name=$service" \
     replicationControllers | grep version | awk '{print $1}')
+
+
 if [[ -z "$old_controller_name" ]]
 then
-    ./kubectl create -f ~/$repo/cfg/$repo-service.yml
+    if [[ -f $service ]]; then
+        ./kubectl create -f $service
+    fi
     ./kubectl create -f $controller
 else
     # This should work because of ./.kubeconfig and ~/.kubernetes_auth
