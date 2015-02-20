@@ -8,7 +8,7 @@ set -e
 cd
 
 repo=$1
-service=$(echo $repo|tr '_' '-')
+name=$(echo $repo|tr '_' '-')
 
 # Works with the certificate & docker login
 docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS $EXTERNAL_REGISTRY_ENDPOINT
@@ -20,7 +20,7 @@ sed -i "s/REGISTRY/$internal_registry/g" $controller
 sed -i "s/VERSION/$CIRCLE_SHA1/g" $controller
 service=~/$repo/cfg/$repo-service.yml
 
-old_controller_name=$(./kubectl get --no-headers -l "name=$service" \
+old_controller_name=$(./kubectl get --no-headers -l "name=$name" \
     replicationControllers | grep version | awk '{print $1}')
 
 
