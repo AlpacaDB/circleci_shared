@@ -12,6 +12,8 @@ sudo update-ca-certificates
 sudo service docker restart
 docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS $EXTERNAL_REGISTRY_ENDPOINT
 
+# Build docker image
+./make build
 # Create tag for the docker image
 docker tag $repo $EXTERNAL_REGISTRY_ENDPOINT/$repo:$CIRCLE_SHA1
 
