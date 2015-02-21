@@ -7,6 +7,13 @@
 set -e
 cd
 
+
+if ! ping -c 1 -w 2 "KUBE_MASTER_IP" &>/dev/null
+then
+    echo "No cluster is running, ignoring deploy"
+    exit 0
+fi
+
 repo=$1
 name=$(echo $repo|tr '_' '-')
 
