@@ -52,4 +52,6 @@ fi
 replicas=$(./kubectl get replicationControllers | grep skydns| awk '{print $5}')
 message+=" [$replicas replicas]"
 
-curl --data "$message" $'https://ikkyotech.slack.com/services/hooks/slackbot?token=Q4MUYiQQb68FXcUEarQognYg&channel=%23ops'
+
+curl -X POST --data-urlencode 'payload={"channel": "#ops", "username": "KubeCI", "text": "'"$message"'", "icon_emoji": ":ghost:"}' \
+    https://hooks.slack.com/services/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
