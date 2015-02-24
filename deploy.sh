@@ -8,7 +8,7 @@ set -e
 cd
 
 
-if ! ping -c 1 -w 2 "$KUBE_MASTER_IP" &>/dev/null
+if ! curl -s -k https://$KUBE_MASTER_IP &>/dev/null
 then
     echo "No cluster is running, ignoring deploy"
     exit 0
