@@ -46,7 +46,7 @@ else
     ./kubectl rollingupdate $old_controller_name -f $controller
     message="\t* controller updated: $old_controller_name -> $name-$CIRCLE_SHA1"
 fi
-replicas=$(kubectl get replicationControllers | grep skydns| awk '{print $5}')
+replicas=$(./kubectl get replicationControllers | grep skydns| awk '{print $5}')
 message += " [$replicas replicas]"
 
 curl --data "$message" $'https://ikkyotech.slack.com/services/hooks/slackbot?token=Q4MUYiQQb68FXcUEarQognYg&channel=%23ops'
