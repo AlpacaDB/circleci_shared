@@ -41,6 +41,9 @@ then
     fi
     ./kubectl create -f $controller
     message="\t* controller created: $name -> $CIRCLE_SHA1"
+elif [[ "$old_controller_name" == "$name-$CIRCLE_SHA1" ]]; then
+    echo "The controller is already running under the same version. Ignoring"
+    exit 0
 else
     # This should work because of ./.kubeconfig and ~/.kubernetes_auth
     ./kubectl rollingupdate $old_controller_name -f $controller
