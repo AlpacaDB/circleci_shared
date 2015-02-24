@@ -40,16 +40,16 @@ then
         message+="\t* service started [$service_ip]\n"
     fi
     ./kubectl create -f $controller
-    message="\t* controller created: $name -> $CIRCLE_SHA1"
+    message+="\t* controller created: $name -> $CIRCLE_SHA1"
 elif [[ "$old_controller_name" == "$name-$CIRCLE_SHA1" ]]; then
     echo "The controller is already running under the same version. Ignoring"
     exit 0
 else
     # This should work because of ./.kubeconfig and ~/.kubernetes_auth
     ./kubectl rollingupdate $old_controller_name -f $controller
-    message="\t* controller updated: $old_controller_name -> $name-$CIRCLE_SHA1"
+    message+="\t* controller updated: $old_controller_name -> $name-$CIRCLE_SHA1"
 fi
 replicas=$(./kubectl get replicationControllers | grep skydns| awk '{print $5}')
-message += " [$replicas replicas]"
+message+=" [$replicas replicas]"
 
 curl --data "$message" $'https://ikkyotech.slack.com/services/hooks/slackbot?token=Q4MUYiQQb68FXcUEarQognYg&channel=%23ops'
