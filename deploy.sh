@@ -31,13 +31,22 @@ old_controller_name=$(./kubectl get --no-headers -l "name=$name" \
     replicationControllers | grep version | awk '{print $1}')
 
 
+message=":cyclone: *$repo*\n"   # message to send to slack
 if [[ -z "$old_controller_name" ]]
 then
     if [[ -f $service ]]; then
         ./kubectl create -f $service
+        service_ip=$(./kubectl get services | grep logger | awk '{print $4}')
+        message+="\t* service started [$service_ip]\n"
     fi
     ./kubectl create -f $controller
+    message="\t* controller created: $name -> $CIRCLE_SHA1"
 else
     # This should work because of ./.kubeconfig and ~/.kubernetes_auth
     ./kubectl rollingupdate $old_controller_name -f $controller
+    message="\t* controller updated: $old_controller_name -> $name-$CIRCLE_SHA1"
 fi
+replicas=$(kubectl get replicationControllers | grep skydns| awk '{print $5}')
+message += " [$replicas replicas]"
+
+curl --data "$message" $'https://ikkyotech.slack.com/services/hooks/slackbot?token=Q4MUYiQQb68FXcUEarQognYg&channel=%23ops'
