@@ -34,26 +34,28 @@ old_controller_name=$(./kubectl get --no-headers -l "name=$name" \
 
 
 echo "update cluster"
-message="*$repo:*\n"   # message to send to slack
+message="*$repo*"   # message to send to slack
+submessage=""
 if [[ -z "$old_controller_name" ]]
 then
     if [[ -f $service ]]; then
         ./kubectl create -f $service
         service_ip=$(./kubectl get services | grep logger | awk '{print $4}')
-        message+="\t* service started [$service_ip]\n"
+        submessage+="\t> service started [$service_ip]\n"
     fi
     ./kubectl create -f $controller
-    message+="\t* controller created: $name -> $CIRCLE_SHA1"
+    submessage+="\t> controller created: $name -> $CIRCLE_SHA1"
 elif [[ "$old_controller_name" == "$name-$CIRCLE_SHA1" ]]; then
     echo "The controller is already running under the same version. Ignoring"
     exit 0
 else
     # This should work because of ./.kubeconfig and ~/.kubernetes_auth
     ./kubectl rollingupdate $old_controller_name -f $controller
-    message+="\t* controller updated: $old_controller_name -> $name-$CIRCLE_SHA1"
+    submessage+="\t> controller updated: $old_controller_name -> $name-$CIRCLE_SHA1"
 fi
 replicas=$(./kubectl get replicationControllers | grep skydns| awk '{print $5}')
-message+=" [$replicas replicas]"
+message+=" [$replicas replicas]\n"
+message+=$submessage
 
 
 echo "Send notification to slack"
