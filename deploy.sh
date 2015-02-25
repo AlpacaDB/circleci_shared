@@ -31,7 +31,7 @@ old_controller_name=$(./kubectl get --no-headers -l "name=$name" \
     replicationControllers | grep version | awk '{print $1}')
 
 
-message=":cyclone: *$repo*\n"   # message to send to slack
+message="*$repo:*\n"   # message to send to slack
 if [[ -z "$old_controller_name" ]]
 then
     if [[ -f $service ]]; then
@@ -53,5 +53,5 @@ replicas=$(./kubectl get replicationControllers | grep skydns| awk '{print $5}')
 message+=" [$replicas replicas]"
 
 
-curl -X POST --data-urlencode 'payload={"channel": "#ops", "username": "KubeCI", "text": "'"$message"'", "icon_emoji": ":ghost:"}' \
+curl -X POST --data-urlencode 'payload={"channel": "#ops", "username": "KubeCI", "text": "'"$message"'", "icon_emoji": ":kube:"}' \
     https://hooks.slack.com/services/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
