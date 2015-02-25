@@ -21,16 +21,19 @@ name=$(echo $repo|tr '_' '-')
 docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS $EXTERNAL_REGISTRY_ENDPOINT
 docker push $EXTERNAL_REGISTRY_ENDPOINT/$repo:$CIRCLE_SHA1
 
+echo "Update controller registry & version"
 internal_registry=$(./kubectl get --no-headers services registry-service| awk '{print $4}')
 controller=~/$repo/cfg/$repo-controller.yml
 sed -i "s/REGISTRY/$internal_registry/g" $controller
 sed -i "s/VERSION/$CIRCLE_SHA1/g" $controller
 service=~/$repo/cfg/$repo-service.yml
 
+echo "get old controller name"
 old_controller_name=$(./kubectl get --no-headers -l "name=$name" \
     replicationControllers | grep version | awk '{print $1}')
 
 
+echo "update cluster"
 message="*$repo:*\n"   # message to send to slack
 if [[ -z "$old_controller_name" ]]
 then
@@ -53,5 +56,6 @@ replicas=$(./kubectl get replicationControllers | grep skydns| awk '{print $5}')
 message+=" [$replicas replicas]"
 
 
+echo "Send notification to slack"
 curl -X POST --data-urlencode 'payload={"channel": "#ops", "username": "KubeCI", "text": "'"$message"'", "icon_emoji": ":kube:"}' \
     https://hooks.slack.com/services/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
