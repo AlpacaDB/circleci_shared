@@ -22,4 +22,5 @@ wget https://storage.googleapis.com/kubernetes-release/release/v0.9.1/bin/linux/
 chmod +x ~/kubectl
 cp kubeconfig ~/.kubeconfig
 chmod +x deploy.sh
+mv apiserver* /srv/
 envsubst < ./kubernetes_auth.template > /home/ubuntu/.kubernetes_auth

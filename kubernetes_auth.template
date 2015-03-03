@@ -1,1 +1,6 @@
-{"User": "${KUBERNETES_USER}", "Password": "${KUBERNETES_PASS}"}
+{
+    "User": "${KUBERNETES_USER}",
+    "Password": "${KUBERNETES_PASS}",
+    "CertFile": "/srv/apiserver.cert",
+    "KeyFile": "/srv/apiserver.key"
+}
